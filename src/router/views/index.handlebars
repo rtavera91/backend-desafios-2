@@ -1,0 +1,21 @@
+<script>
+  let user = {
+    first_name: "{{first_name}}",
+    last_name: "{{last_name}}",
+    email: "{{email}}"
+  };
+</script>
+
+<h3>Welcome {{first_name}}</h3>
+
+{{!-- aquí ingresaremos la ventana del chat --}}
+
+<form id="chatForm">
+    <input type="text" name="chatMessage" id="chatMessage">
+    <input type="submit" value="SEND">
+</form>
+
+<div id="chat"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

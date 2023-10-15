@@ -1,0 +1,72 @@
+<style>
+        /* Estilos para el formulario */
+        #form {
+            margin-bottom: 20px;
+        }
+
+        #form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #form input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Estilos para la tabla */
+        #table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #table th, #table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #table th {
+            background-color: #f2f2f2;
+        }
+
+        /* Estilos para las imágenes en la tabla */
+        #table img {
+            max-width: 50px;
+            height: auto;
+        }
+    </style>
+
+<h3>Real Time Products</h3>
+
+<form id="form">
+    Title: <input type="text" name="title" id="title">
+    Description: <input type="text" name="description" id="description">
+    Code: <input type="text" name="code" id="code">
+    Price: <input type="text" name="price" id="price">
+    Category: <input type="text" name="category" id="category">
+    Thumbnail: <input type="text" name="thumbnail" id="thumbnail">
+    <input type="submit" value="Add Product">
+</form>
+
+<table id="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Code</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Thumbnail</th>
+        </tr>
+    </thead>
+    <tbody id="tbody">
+
+    </tbody>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/src/public/js/products.js"></script>
