@@ -31,12 +31,11 @@ router.post("/cart", async (req, res) => {
 router.get("/cart/:cid", async (req, res) => {
   const { cid } = req.params;
   try {
-    const carts = await cartsManager.findById();
-    const cart = carts.find((cart) => cart.id == cid);
-    if (cart.error === "Cart Not Found") {
-      res.status(404).json({ message: "Cart not found" });
-    } else {
+    const cart = await cartsManager.findById(cid); // Pasa el ID del carrito
+    if (cart) {
       res.status(200).json({ message: "Cart found", cart });
+    } else {
+      res.status(404).json({ message: "Cart not found" });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -46,10 +45,47 @@ router.get("/cart/:cid", async (req, res) => {
 // agregar producto a carrito existente
 router.post("/cart/:cid/product/:pid", async (req, res) => {
   const { cid, pid } = req.params;
-  const quantity = parseInt(req.body.quantity, 10); // Convierte el valor en un número
+  const quantity = parseInt(req.body.quantity, 10);
   try {
-    await cartsManager.updateOne(cid, pid, quantity);
-    res.status(200).json({ message: "Product added to cart" });
+    const updatedCart = await cartsManager.updateOne(cid, pid, quantity);
+    if (updatedCart) {
+      res
+        .status(200)
+        .json({ message: "Product added to cart", cart: updatedCart });
+    } else {
+      res.status(404).json({ message: "Cart or Product not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//elimina de un carrito, un producto seleccionado
+router.delete("/cart/:cid/product/:pid", async (req, res) => {
+  const { cid, pid } = req.params;
+  try {
+    const updatedCart = await cartsManager.deleteProduct(cid, pid);
+    if (updatedCart) {
+      res
+        .status(200)
+        .json({ message: "Product deleted from cart", cart: updatedCart });
+    } else {
+      res.status(404).json({ message: "Cart or Product not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// modificamos la cantidad de un producto en un carrito
+router.put("/cart/:cid/product/:pid", async (req, res) => {
+  const { cid, pid } = req.params;
+  const quantity = parseInt(req.body.quantity, 10);
+  try {
+    const updatedCart = await cartsManager.updateOne(cid, pid, quantity);
+    res
+      .status(200)
+      .json({ message: "Product quantity updated", cart: updatedCart });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

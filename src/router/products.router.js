@@ -9,16 +9,30 @@ router.get("/", (req, res) => {
 // get de todos los productos con opción para poner un límite
 router.get("/products/", async (req, res) => {
   try {
-    const products = await productsManager.findAll();
-    const { limit } = req.query;
-    if (!products.length) {
+    const { limit, sort, page, query } = req.query;
+    const limitValue = limit ? parseInt(limit) : 10;
+    let sortBy = null;
+    const endpoint = "http://localhost:8080/api/products/products";
+
+    if (sort) {
+      sortBy = sort === "asc" ? "price" : `-${sort === "desc" ? "price" : ""}`;
+    }
+
+    const products = await productsManager.findAll({
+      limit: limitValue,
+      sort: sortBy,
+      page,
+      query,
+      endpoint,
+    });
+    if (!products.results.length) {
       res.status(200).json({ message: "No Products Found" });
     } else {
-      if (limit) {
-        res.status(200).json(products.slice(0, limit));
-      } else {
-        res.status(200).json({ message: "Products found", products });
-      }
+      res.status(200).json({
+        message: "Products found",
+        info: products.info,
+        products: products.results,
+      });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
