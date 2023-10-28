@@ -1,4 +1,5 @@
 <h2>This is our product Catalog</h2>
+<h3>Welcome {{first_name}}, your email is: {{email}}</h3>
 
 <a href="http://localhost:8080/api/carts/cart/653360e2c3e730f42eadf726">Go to cart</a>
 
@@ -11,4 +12,10 @@
 
 </div>
 
-<script src="/js/productsv2.js"></script>
+{{!-- botón de logout --}}
+<button><a href="/api/users/logout">Logout</a></button>
+
+
+
+
+<script src="../../dao/public/js/productsv2.js"></script>

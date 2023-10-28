@@ -10,12 +10,32 @@ import { __dirname } from "./utils.js";
 import { productsManager } from "../src/dao/db/managers/productManager.js";
 import "./dao/configDB.js";
 import handlebars from "express-handlebars";
+import session from "express-session"; // para manejar sesiones
+import MongoStore from "connect-mongo"; // para guardar las sesiones en la base de datos
+import "./dao/configDB.js"; // para conectar a la base de datos
+import cookieParser from "cookie-parser";
 
 const app = express();
 
+app.use(cookieParser()); // para poder usar req.cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+
+// configuración de la sesión en mongo
+const URI =
+  "mongodb+srv://bxrodrigo61:coderhouse@codercluster.djisdxv.mongodb.net/ecommerce?retryWrites=true&w=majority";
+app.use(
+  session({
+    secret: "SESSIONSECRETKEY",
+    cookie: {
+      maxAge: 60 * 60 * 1000, // 1 hora,
+    },
+    store: new MongoStore({
+      mongoUrl: URI,
+    }),
+  })
+);
 
 // configuración de handlebars
 app.engine("handlebars", handlebars.engine());

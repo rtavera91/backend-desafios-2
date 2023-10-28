@@ -6,6 +6,10 @@ import { productsManager } from "../dao/db/managers/productManager.js";
 const router = Router();
 
 router.get("/", (req, res) => {
+  res.render("login");
+});
+
+router.get("/signup", (req, res) => {
   res.render("signup");
 });
 
@@ -35,6 +39,10 @@ router.get("/products", async (req, res) => {
       sortBy = sort === "asc" ? "price" : `-${sort === "desc" ? "price" : ""}`;
     }
 
+    //accedemos al nombre & email de la sesión
+    const email = req.session.email;
+    const first_name = req.session.first_name;
+
     const productsData = await productsManager.findAll({
       limit: limitValue,
       sort: sortBy,
@@ -52,6 +60,8 @@ router.get("/products", async (req, res) => {
       hasNextPage,
       prev,
       next,
+      email,
+      first_name,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
