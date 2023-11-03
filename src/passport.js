@@ -75,6 +75,32 @@ passport.use(
     async function (accessToken, refreshToken, profile, done) {
       console.log("profile", profile);
       done(null, false);
+      try {
+        const userDB = await usersManager.findByEmail(profile.email);
+        //login
+        if (userDB) {
+          if (userDB.from_github) {
+            return done(null, userDB);
+          } else {
+            return done(null, false);
+          }
+        }
+
+        //signup
+        const newUser = {
+          first_name: "prueba",
+          last_name: "test",
+          email: profile.email,
+          password: "12345678",
+          from_github: true,
+        };
+        const createdUser = await usersManager.createOne(newUser);
+        if (createdUser) {
+          return done(null, createdUser);
+        }
+      } catch (error) {
+        done(error);
+      }
     }
   )
 );

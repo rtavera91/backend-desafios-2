@@ -13,6 +13,11 @@ router.get("/signup", (req, res) => {
   res.render("signup");
 });
 
+// error
+router.get("/error", (req, res) => {
+  res.render("error");
+});
+
 router.get("/index/:idUser", async (req, res) => {
   const { idUser } = req.params;
   const userInfo = await usersManager.findById(idUser);
@@ -82,11 +87,6 @@ router.get("/products/:pid", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
-});
-
-// error
-router.get("/error", (req, res) => {
-  res.render("error");
 });
 
 export const viewsRouter = router;
