@@ -84,4 +84,9 @@ router.get("/products/:pid", async (req, res) => {
   }
 });
 
+// error
+router.get("/error", (req, res) => {
+  res.render("error");
+});
+
 export const viewsRouter = router;

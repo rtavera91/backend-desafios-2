@@ -15,6 +15,10 @@ import MongoStore from "connect-mongo"; // para guardar las sesiones en la base 
 import "./dao/configDB.js"; // para conectar a la base de datos
 import cookieParser from "cookie-parser";
 
+//importar passport y la configuración de passport
+import "./passport.js";
+import passport from "passport";
+
 const app = express();
 
 app.use(cookieParser()); // para poder usar req.cookies
@@ -37,10 +41,17 @@ app.use(
   })
 );
 
+// inicializamos passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // configuración de handlebars
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/router/views");
 app.set("view engine", "handlebars");
+
+// configuración de recursos estáticos
+app.use(express.static(__dirname + "/public"));
 
 //routes
 app.use("/", viewsRouter);

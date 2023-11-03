@@ -1,7 +1,24 @@
 import { Router } from "express";
 import { usersManager } from "../dao/db/managers/usersManager.js";
+import { hashData, compareData } from "../utils.js";
+import passport from "passport";
 
 const router = Router();
+
+// login github
+router.get(
+  "/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+router.get(
+  "/github",
+  passport.authenticate("github", { failureRedirect: "error" }),
+  (req, res) => {
+    res.session.user = req.user;
+    res.redirect("/products");
+  }
+);
 
 // sistema de logout
 router.get("/logout", (req, res) => {
@@ -32,18 +49,59 @@ router.get("/:idUser", async (req, res) => {
   }
 });
 
+// login con passport
 router.post("/", async (req, res) => {
-  const { first_name, last_name, email, password } = req.body;
-  if (!first_name || !last_name || !email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
+  const { password } = req.body;
   try {
-    const createdUser = await usersManager.createOne(req.body);
-    res.redirect(`/index/${createdUser._id}`);
+    const hashedPassword = await hashData(password);
+    const createdUser = await usersManager.createOne({
+      ...req.body,
+      password: hashedPassword,
+    });
+    res.status(200).json({ message: "User created", user: createdUser });
   } catch (error) {
     res.status(500).json({ error: "Error", error });
   }
 });
+
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const userDB = await usersManager.findByEmail(email);
+    if (!userDB) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    const isValid = await compareData(password, userDB.password);
+    if (!isValid) {
+      return res.status(401).json({ message: "Invalid Credentials" });
+    }
+    res.status(200).json({ message: `Welcome ${userDB.first_name}!` });
+  } catch (error) {
+    res.status(500).json({ error: "Error", error });
+  }
+});
+
+//signup con passport
+router.post(
+  "signup",
+  passport.authenticate("signup", {
+    successRedirect: "/products",
+    failureRedirect: "/error",
+  })
+);
+
+// router.post("/", async (req, res) => {
+//   const { first_name, last_name, email, password } = req.body;
+//   if (!first_name || !last_name || !email || !password) {
+//     return res.status(400).json({ message: "All fields are required" });
+//   }
+//   try {
+//     const createdUser = await usersManager.createOne(req.body);
+//     res.redirect(`/index/${createdUser._id}`);
+//   } catch (error) {
+//     res.status(500).json({ error: "Error", error });
+//   }
+// });
 
 // sistema de login para usuarios existentes
 router.post("/login", async (req, res) => {
