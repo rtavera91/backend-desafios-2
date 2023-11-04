@@ -27,6 +27,11 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  role: {
+    type: String,
+    enum: ["admin", "premium", "client"],
+    default: "client",
+  },
 });
 
 export const usersModel = model("Users", userSchema);
