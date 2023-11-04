@@ -76,7 +76,7 @@ passport.use(
       console.log("profile", profile);
       done(null, false);
       try {
-        const userDB = await usersManager.findByEmail(profile.email);
+        const userDB = await usersManager.findByEmail(profile._json.email);
         //login
         if (userDB) {
           if (userDB.from_github) {
@@ -88,9 +88,9 @@ passport.use(
 
         //signup
         const newUser = {
-          first_name: "prueba",
-          last_name: "test",
-          email: profile.email,
+          first_name: profile._json.name.split(" ")[0],
+          last_name: profile._json.name.split(" ")[1] || "",
+          email: profile._json.email || profile.emails[0].value,
           password: "12345678",
           from_github: true,
         };

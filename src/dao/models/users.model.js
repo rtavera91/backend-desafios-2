@@ -23,6 +23,10 @@ const userSchema = new Schema({
     required: true,
     min: 3,
   },
+  from_github: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 export const usersModel = model("Users", userSchema);

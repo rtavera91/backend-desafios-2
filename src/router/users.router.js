@@ -15,7 +15,7 @@ router.get(
   "/github",
   passport.authenticate("github", { failureRedirect: "/error" }),
   (req, res) => {
-    console.log("req.user", req.user);
+    console.log("req.user", req.user); // prueba de que el usuario está logueado
     res.session.user = req.user;
     res.redirect("/products");
   }
