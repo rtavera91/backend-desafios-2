@@ -14,6 +14,7 @@ import session from "express-session"; // para manejar sesiones
 import MongoStore from "connect-mongo"; // para guardar las sesiones en la base de datos
 import "./dao/configDB.js"; // para conectar a la base de datos
 import cookieParser from "cookie-parser";
+import sessionsRouter from "./router/sessions.router.js";
 
 //importar passport y la configuración de passport
 import "./passport.js";
@@ -59,6 +60,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/chat", chatsRouter);
+app.use("/api/sessions", sessionsRouter);
 
 // levantamos al servidor
 

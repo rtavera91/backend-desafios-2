@@ -2,7 +2,10 @@ import passport from "passport";
 import { usersManager } from "./dao/db/managers/usersManager.js";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GitHubStrategy } from "passport-github2";
+import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { hashData, compareData } from "./utils.js";
+
+const JWT_SECRET = "jwtSECRET";
 
 //LOCAL
 passport.use(
@@ -104,6 +107,42 @@ passport.use(
     }
   )
 );
+// serializeUser
+passport.serializeUser(function (user, done) {
+  console.log("test");
+  done(null, user._id);
+});
+
+// deserializeUser
+passport.deserializeUser(async function (id, done) {
+  try {
+    const userDB = await usersManager.findById(id);
+    done(null, userDB);
+  } catch (error) {
+    done(error);
+  }
+});
+
+// JWT - COOKIES
+
+const fromCookies = (req) => {
+  return req.cookies.token;
+};
+
+passport.use(
+  "jwt",
+  new JwtStrategy(
+    {
+      secretOrKey: JWT_SECRET,
+      jwtFromRequest: ExtractJwt.fromExtractors([fromCookies]),
+    },
+    async (jwt_payload, done) => {
+      console.log("---jwt-passport---", jwt_payload);
+      done(null, jwt_payload);
+    }
+  )
+);
+
 // serializeUser
 passport.serializeUser(function (user, done) {
   console.log("test");

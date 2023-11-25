@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
 const userSchema = new Schema({
   first_name: {
@@ -29,8 +30,12 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "premium", "client"],
-    default: "client",
+    enum: ["admin", "premium", "user"],
+    default: "user",
+  },
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Carts",
   },
 });
 
