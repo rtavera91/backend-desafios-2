@@ -8,11 +8,12 @@ import { usersRouter } from "./router/users.router.js";
 import { chatsRouter } from "./router/chats.router.js";
 import { __dirname } from "./utils.js";
 import { productsManager } from "../src/dao/db/managers/productManager.js";
-import "./dao/configDB.js";
+import config from "./config/config.js";
+import "./config/configDB.js";
 import handlebars from "express-handlebars";
 import session from "express-session"; // para manejar sesiones
 import MongoStore from "connect-mongo"; // para guardar las sesiones en la base de datos
-import "./dao/configDB.js"; // para conectar a la base de datos
+import "./config/configDB.js"; // para conectar a la base de datos
 import cookieParser from "cookie-parser";
 import sessionsRouter from "./router/sessions.router.js";
 
@@ -28,11 +29,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 
 // configuración de la sesión en mongo
-const URI =
-  "mongodb+srv://bxrodrigo61:coderhouse@codercluster.djisdxv.mongodb.net/ecommerce?retryWrites=true&w=majority";
+const URI = config.mongo_uri;
 app.use(
   session({
-    secret: "SESSIONSECRETKEY",
+    secret: config.session_secret,
     cookie: {
       maxAge: 60 * 60 * 1000, // 1 hora,
     },
@@ -64,7 +64,7 @@ app.use("/api/sessions", sessionsRouter);
 
 // levantamos al servidor
 
-const PORT = 8080;
+const PORT = config.port;
 const httpServer = app.listen(PORT, () => {
   console.log(`Escuchando al puerto ${PORT}...`);
 });

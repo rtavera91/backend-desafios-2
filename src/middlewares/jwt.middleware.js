@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
-const JWT_SECRET = "jwtSECRET";
+import config from "../config/config.js";
+
+const JWT_SECRET = config.jwt_secret;
 
 export const jwtValidation = (req, res, next) => {
   try {

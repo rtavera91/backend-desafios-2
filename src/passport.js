@@ -4,8 +4,9 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { hashData, compareData } from "./utils.js";
+import config from "./config/config.js";
 
-const JWT_SECRET = "jwtSECRET";
+const JWT_SECRET = config.jwt_secret;
 
 //LOCAL
 passport.use(
@@ -71,8 +72,8 @@ passport.use(
 passport.use(
   new GitHubStrategy(
     {
-      clientID: "Iv1.ebcfa6e7611d70bd",
-      clientSecret: "0a8c624c0c38f973dbfc389544632d14da5c808d",
+      clientID: config.github_client_id,
+      clientSecret: config.github_client_secret,
       callbackURL: "http://localhost:8080/api/users/github",
     },
     async function (accessToken, refreshToken, profile, done) {

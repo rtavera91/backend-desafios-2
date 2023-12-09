@@ -2,6 +2,7 @@ import { Router } from "express";
 import { usersManager } from "../dao/db/managers/usersManager.js";
 import { hashData, compareData } from "../utils.js";
 import passport from "passport";
+import config from "../config/config.js";
 
 const router = Router();
 
@@ -113,7 +114,7 @@ router.post("/login", async (req, res) => {
   }
   req.session["email"] = email;
   req.session["first_name"] = userDB.first_name;
-  if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
+  if (email === config.admin_email && password === config.admin_password) {
     req.session["isAdmin"] = true;
   }
   res.redirect("/products");

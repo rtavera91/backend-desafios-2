@@ -5,3 +5,5 @@ node_modules/
 *.swp
 *~
 
+# entorno de desarrollo
+.env
