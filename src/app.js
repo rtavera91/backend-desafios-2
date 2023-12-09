@@ -7,7 +7,7 @@ import { cartRouter } from "./router/cart.router.js";
 import { usersRouter } from "./router/users.router.js";
 import { chatsRouter } from "./router/chats.router.js";
 import { __dirname } from "./utils.js";
-import { productsManager } from "../src/dao/db/managers/productManager.js";
+import { productsManager } from "../src/dao/managers/productManager.js";
 import config from "./config/config.js";
 import "./config/configDB.js";
 import handlebars from "express-handlebars";

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { usersManager } from "../dao/db/managers/usersManager.js";
+import { usersManager } from "../dao/managers/usersManager.js";
 import { generateToken, compareData, hashData } from "../utils.js";
 import { jwtValidation } from "../middlewares/jwt.middleware.js";
 const router = Router();

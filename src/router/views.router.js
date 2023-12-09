@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { __dirname } from "../utils.js";
-import { usersManager } from "../dao/db/managers/usersManager.js";
-import { productsManager } from "../dao/db/managers/productManager.js";
+import { usersManager } from "../dao/managers/usersManager.js";
+import { productsManager } from "../dao/managers/productManager.js";
 
 const router = Router();
 

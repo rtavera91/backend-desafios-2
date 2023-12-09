@@ -1,4 +1,4 @@
-import { productsModel } from "../../models/products.model.js";
+import { productsModel } from "../models/products.model.js";
 import BasicManager from "./basicManager.js";
 
 class ProductsManager extends BasicManager {

@@ -1,5 +1,5 @@
 import passport from "passport";
-import { usersManager } from "./dao/db/managers/usersManager.js";
+import { usersManager } from "./dao/managers/usersManager.js";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";

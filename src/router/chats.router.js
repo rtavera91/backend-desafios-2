@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { messagesManager } from "../dao/db/managers/messageManager.js";
+import { messagesManager } from "../dao/managers/messageManager.js";
 
 const router = Router();
 
