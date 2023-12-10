@@ -1,6 +1,14 @@
 import { Router } from "express";
 import { usersManager } from "../dao/managers/usersManager.js";
-import { hashData, compareData } from "../utils.js";
+// import { hashData, compareData } from "../utils.js";
+import {
+  findUsers,
+  findUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+  loginUser,
+} from "../controllers/users.controller.js";
 import passport from "passport";
 import config from "../config/config.js";
 
@@ -32,56 +40,63 @@ router.get("/logout", (req, res) => {
   });
 });
 
-router.get("/", async (req, res) => {
-  try {
-    const users = await usersManager.findAll();
-    res.status(200).json({ message: "Users", users });
-  } catch (error) {
-    res.status(500).json({ error: "Error", error });
-  }
-});
+router.get("/", findUsers);
+router.get("/:uid", findUserById);
+router.post("/", createUser);
+router.put("/:uid", updateUser);
+router.delete("/:uid", deleteUser);
+router.post("/login", loginUser);
 
-router.get("/:idUser", async (req, res) => {
-  const { idUser } = req.params;
-  try {
-    const user = await usersManager.findById(idUser);
-    res.status(200).json({ message: "User found", user });
-  } catch (error) {
-    res.status(500).json({ error: "Error", error });
-  }
-});
+// router.get("/", async (req, res) => {
+//   try {
+//     const users = await usersManager.findAll();
+//     res.status(200).json({ message: "Users", users });
+//   } catch (error) {
+//     res.status(500).json({ error: "Error", error });
+//   }
+// });
 
-// login con passport
-router.post("/", async (req, res) => {
-  const { password } = req.body;
-  try {
-    const hashedPassword = await hashData(password);
-    const createdUser = await usersManager.createOne({
-      ...req.body,
-      password: hashedPassword,
-    });
-    res.status(200).json({ message: "User created", user: createdUser });
-  } catch (error) {
-    res.status(500).json({ error: "Error", error });
-  }
-});
+// router.get("/:idUser", async (req, res) => {
+//   const { idUser } = req.params;
+//   try {
+//     const user = await usersManager.findById(idUser);
+//     res.status(200).json({ message: "User found", user });
+//   } catch (error) {
+//     res.status(500).json({ error: "Error", error });
+//   }
+// });
 
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const userDB = await usersManager.findByEmail(email);
-    if (!userDB) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-    const isValid = await compareData(password, userDB.password);
-    if (!isValid) {
-      return res.status(401).json({ message: "Invalid Credentials" });
-    }
-    res.status(200).json({ message: `Welcome ${userDB.first_name}!` });
-  } catch (error) {
-    res.status(500).json({ error: "Error", error });
-  }
-});
+// // login con passport
+// router.post("/", async (req, res) => {
+//   const { password } = req.body;
+//   try {
+//     const hashedPassword = await hashData(password);
+//     const createdUser = await usersManager.createOne({
+//       ...req.body,
+//       password: hashedPassword,
+//     });
+//     res.status(200).json({ message: "User created", user: createdUser });
+//   } catch (error) {
+//     res.status(500).json({ error: "Error", error });
+//   }
+// });
+
+// router.post("/login", async (req, res) => {
+//   const { email, password } = req.body;
+//   try {
+//     const userDB = await usersManager.findByEmail(email);
+//     if (!userDB) {
+//       return res.status(400).json({ message: "Invalid credentials" });
+//     }
+//     const isValid = await compareData(password, userDB.password);
+//     if (!isValid) {
+//       return res.status(401).json({ message: "Invalid Credentials" });
+//     }
+//     res.status(200).json({ message: `Welcome ${userDB.first_name}!` });
+//   } catch (error) {
+//     res.status(500).json({ error: "Error", error });
+//   }
+// });
 
 //signup con passport
 router.post(
@@ -121,12 +136,6 @@ router.post("/login", async (req, res) => {
 });
 
 // sistema de signup para usuarios nuevos
-router.post("/signup", async (req, res) => {
-  const createdUser = await usersManager.createOne(req.body);
-  res.status(200).json({
-    message: "User created",
-    createdUser,
-  });
-});
+router.post("/signup", createUser);
 
 export const usersRouter = router;
