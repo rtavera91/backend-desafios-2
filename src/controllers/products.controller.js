@@ -9,7 +9,7 @@ import {
 export const findProducts = async (req, res) => {
   const products = await findAll();
   if (!products.length) {
-    res.status(200).json({ message: "No Products Found" });
+    res.status(404).json({ message: "No Products Found" });
   } else {
     res.status(200).json({ message: "Products found", products });
   }
