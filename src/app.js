@@ -17,7 +17,8 @@ import "./config/configDB.js"; // para conectar a la base de datos
 import cookieParser from "cookie-parser";
 import sessionsRouter from "./router/sessions.router.js";
 import swaggerUi from "swagger-ui-express";
-import { swaggerSetup } from "./swagger.Specs.js";
+//import { swaggerSetup } from "./swaggerSpecs.js";
+import { swaggerSetup } from "./swaggerSetup.js";
 
 //importar passport y la configuración de passport
 import "./passport.js";
