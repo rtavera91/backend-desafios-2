@@ -8,7 +8,9 @@ import {
   updateUser,
   deleteUser,
   loginUser,
+  updateToPremium,
 } from "../controllers/users.controller.js";
+import documentUploader from "../middlewares/documentUploader.js";
 import passport from "passport";
 import config from "../config/config.js";
 
@@ -31,13 +33,25 @@ router.get(
 );
 
 // sistema de logout
-router.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Error destroying session:", err);
+router.get("/logout", async (req, res) => {
+  try {
+    if (req.session.email) {
+      //actualizar last connection en la base de datos
+      await usersManager.updateOne(req.session.email, {
+        last_connection: new Date(),
+      });
     }
-    res.redirect("/"); // Redirige al usuario a la página de inicio después de cerrar la sesión
-  });
+    req.session.destroy(async (err) => {
+      if (err) {
+        console.error("Error destroying session:", err);
+      }
+
+      res.redirect("/"); // Redirige al usuario a la página de inicio después de cerrar la sesión
+    });
+  } catch (error) {
+    console.error("Error updating last_connection:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 router.get("/", findUsers);
@@ -46,6 +60,8 @@ router.post("/", createUser);
 router.put("/:uid", updateUser);
 router.delete("/:uid", deleteUser);
 router.post("/login", loginUser);
+router.post("/:uid/documents", documentUploader);
+router.put("/:uid/premium", updateToPremium);
 
 // router.get("/", async (req, res) => {
 //   try {

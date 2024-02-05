@@ -37,6 +37,20 @@ const userSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Carts",
   },
+  documents: {
+    identification: {
+      type: String,
+    },
+    addressProof: {
+      type: String,
+    },
+    bankStatement: {
+      type: String,
+    },
+  },
+  last_connection: {
+    type: Date,
+  },
 });
 
 export const usersModel = model("Users", userSchema);

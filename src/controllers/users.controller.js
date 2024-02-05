@@ -75,8 +75,45 @@ export const loginUser = async (req, res) => {
     if (!isValid) {
       return res.status(401).json({ message: "Invalid Credentials" });
     }
+    //actualizar last_connection en la base de datos
+    await updateOne(userDB.email, {
+      last_connection: new Date(),
+    });
+
     res.status(200).json({ message: `Welcome ${userDB.email}!` });
   } catch (error) {
     res.status(500).json({ error: "Error", error });
+  }
+};
+
+export const uploadDocument = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const { filename } = req.file;
+
+    await usersManager.updateOne(uid, { document: filename });
+    res.status(200).json({ message: "Document uploaded" });
+  } catch (error) {
+    console.error("Error uploading document:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+export const updateToPremium = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const user = await usersManager.findById(uid);
+    if (
+      !user.documents ||
+      !user.documents.identification ||
+      !user.documents.addressProof ||
+      !user.documents.bankStatement
+    ) {
+      return res.status(400).json({ message: "Missing required documents" });
+    }
+    await usersManager.updateOne(uid, { role: "premium" });
+  } catch (error) {
+    console.error("Error updating to premium:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
