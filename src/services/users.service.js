@@ -61,3 +61,21 @@ export const findByEmail = async (email) => {
     throw error;
   }
 };
+
+export const updateLastConnection = async (email) => {
+  try {
+    const updatedUser = await usersManager.updateLastConnection(email);
+    return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getInactiveUsers = async () => {
+  try {
+    const inactiveUsers = await usersManager.getInactiveUsers();
+    return inactiveUsers;
+  } catch (error) {
+    throw error;
+  }
+};

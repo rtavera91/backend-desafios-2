@@ -18,6 +18,11 @@ router.post("/login", async (req, res, next) => {
     }
     const token = generateToken({ id: userDB._id, role: userDB.role });
 
+    const updatedUser = await usersManager.updateLastConnection(email);
+    if (!updatedUser) {
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+
     res
       .status(200)
       .cookie("token", token, { httpOnly: true })

@@ -15,6 +15,33 @@ class UsersManager extends BasicManager {
     const response = await usersModel.findOne({ email });
     return response;
   }
+
+  async updateLastConnection(email) {
+    try {
+      const updatedUser = await usersModel.updateOne(
+        { email: email },
+        { $set: { last_connection: new Date() } },
+        { new: true }
+      );
+      return updatedUser;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getInactiveUsers() {
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+    const inactiveUsers = await usersModel.find({
+      last_connection: {
+        $ne: null,
+        $lt: twoDaysAgo,
+      },
+    });
+
+    return inactiveUsers;
+  }
 }
 
 export const usersManager = new UsersManager(usersModel);

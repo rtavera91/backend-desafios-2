@@ -9,6 +9,7 @@ import {
   deleteUser,
   loginUser,
   updateToPremium,
+  deleteInactiveUsers,
 } from "../controllers/users.controller.js";
 import documentUploader from "../middlewares/documentUploader.js";
 import passport from "passport";
@@ -62,6 +63,7 @@ router.delete("/:uid", deleteUser);
 router.post("/login", loginUser);
 router.post("/:uid/documents", documentUploader);
 router.put("/:uid/premium", updateToPremium);
+router.delete("/", deleteInactiveUsers);
 
 // router.get("/", async (req, res) => {
 //   try {

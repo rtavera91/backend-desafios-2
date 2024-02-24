@@ -5,14 +5,28 @@ import {
   updateOne,
   deleteOne,
   findByEmail,
+  updateLastConnection,
+  getInactiveUsers,
 } from "../services/users.service.js";
+import { transporter } from "../nodemailer.js";
+import config from "../config/config.js";
+import UserDTO from "../dto/user.dto.js";
 
 export const findUsers = async (req, res) => {
   const users = await findAll();
   if (!users.length) {
     res.status(200).json({ message: "No Users Found" });
   } else {
-    res.status(200).json({ message: "Users found", users });
+    const filteredUsers = users.map((user) => {
+      return new UserDTO({
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role,
+      });
+    });
+
+    res.status(200).json({ message: "Users found", filteredUsers });
   }
 };
 
@@ -75,10 +89,8 @@ export const loginUser = async (req, res) => {
     if (!isValid) {
       return res.status(401).json({ message: "Invalid Credentials" });
     }
-    //actualizar last_connection en la base de datos
-    await updateOne(userDB.email, {
-      last_connection: new Date(),
-    });
+
+    await updateLastConnection(email);
 
     res.status(200).json({ message: `Welcome ${userDB.email}!` });
   } catch (error) {
@@ -114,6 +126,28 @@ export const updateToPremium = async (req, res) => {
     await usersManager.updateOne(uid, { role: "premium" });
   } catch (error) {
     console.error("Error updating to premium:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+export const deleteInactiveUsers = async (req, res) => {
+  try {
+    const inactiveUsers = await getInactiveUsers();
+    console.log("Inactive users:", inactiveUsers);
+
+    for (const user of inactiveUsers) {
+      const mailOptions = {
+        from: config.gmail_user,
+        to: user.email,
+        subject: "Account Deletion",
+        text: `Hello ${user.first_name}, your account has been deleted due to inactivity.`,
+      };
+      await transporter.sendMail(mailOptions);
+    }
+    const result = await usersManager.deleteMany(inactiveUsers);
+    res.status(200).json({ message: "Users deleted", result });
+  } catch (error) {
+    console.error("Error deleting inactive users:", error);
     res.status(500).send("Internal Server Error");
   }
 };
